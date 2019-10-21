@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+    <!--
+      配置bean
+      class:bean的全类名，通过反射的方式在IOC容器中创建bean,所以要求bean中必须有无参构造
+      id:bean的标识，唯一
+     -->
+    <bean id="helloWorld" class="code.bean.HelloWorld">
+        <property name="userName" value="spring"/>
+    </bean>
+
+    <!--spring支持的三种依赖注入方式-->
+
+    <!--属性注入-->
+    <bean id="car01" class="code.bean.Car">
+        <property name="carName" value="奥迪Q5L"/>
+        <property name="carPrice" value="300000"/>
+        <property name="carProduce" value="一汽大众"/>
+        <property name="maxSpeed" value="210"/>
+    </bean>
+    <!--构造器注入 按索引顺序匹配-->
+    <bean id="car02" class="code.bean.Car">
+        <constructor-arg value="1000000" index="1"/>
+        <constructor-arg value="250" index="3"/>
+        <constructor-arg value="宝马集团" index="2"/>
+        <constructor-arg value="宝马x7" index="0"/>
+    </bean>
+    <!--构造器注入 按顺序、字段类型匹配-->
+    <bean id="car03" class="code.bean.Car">
+        <constructor-arg value="300" type="java.lang.Integer"/>
+        <constructor-arg value="800000" type="java.lang.Double"/>
+        <constructor-arg value="奔驰G500" type="java.lang.String"/>
+        <constructor-arg value="奔驰集团" type="java.lang.String"/>
+    </bean>
+    <!--如果字面值包含特殊字符 可以使用 <![CDATA[]]> 包裹起来-->
+    <bean id="car04" class="code.bean.Car">
+        <constructor-arg value="300" type="java.lang.Integer"/>
+        <constructor-arg value="2000000" type="java.lang.Double"/>
+        <constructor-arg type="java.lang.String">
+            <value><![CDATA[法拉利<ALT>]]></value>
+        </constructor-arg>
+        <!--属性值也可以直接使用value直接配置-->
+        <constructor-arg type="java.lang.String">
+            <value>法拉利</value>
+        </constructor-arg>
+    </bean>
+    <!--工厂方法注入（很少用，不推荐）-->
+
+    <!--bean的引用-->
+
+    <!--其他bean的引用-->
+    <bean id="person01" class="code.bean.Person">
+        <property name="personName" value="王老五"/>
+        <property name="carList" ref="car04"/>
+    </bean>
+    <!--内部bean的使用-->
+    <bean id="person02" class="code.bean.Person">
+        <property name="personName" value="张三"/>
+        <property name="carList">
+            <!--内部bean类似于内部类，不能被外部使用-->
+            <bean class="code.bean.Car">
+                <property name="carName" value="奥迪Q5L"/>
+                <property name="carPrice" value="300000"/>
+                <property name="carProduce" value="一汽大众"/>
+                <property name="maxSpeed" value="210"/>
+            </bean>
+        </property>
+    </bean>
+    <!--测试null值  <null/>-->
+    <bean id="person03" class="code.bean.Person">
+        <property name="personName">
+            <null/>
+        </property>
+        <property name="carList">
+            <null/>
+        </property>
+    </bean>
+    <!--级联属性赋值-->
+    <!--list属性赋值-->
+    <!--map属性赋值-->
+
+    <!--配置properties属性值-->
+    <bean id="dataSource" class="code.bean.DataSource">
+        <property name="properties">
+            <props>
+                <prop key="user">root</prop>
+                <prop key="password">root</prop>
+                <prop key="url">jdbc:mysql://test</prop>
+                <prop key="jdbcDriver">com.jdbc.mysql.Driver</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 声明集合类型的 bean -->
+    <util:list id="carList">
+        <ref bean="car01"/>
+        <ref bean="car02"/>
+        <ref bean="car03"/>
+        <ref bean="car04"/>
+    </util:list>
+    <!--引用外部声明的list-->
+    <bean id="person04" class="code.bean.Person">
+        <property name="carList" ref="carList"/>
+        <property name="personName" value="赵六"/>
+    </bean>
+
+    <!--bean属性能继承 可以使用parent完成继承-->
+</beans>
