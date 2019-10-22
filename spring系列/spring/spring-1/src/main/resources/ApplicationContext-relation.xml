@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       <!--abstract="true" 之后bean就变成了抽象bean只能被继承，不能被实例化 此时父类bean的class属性可以忽略-->
+       <bean id="address01" class="code.autowire.Address" p:city="上海" p:street="青浦" abstract="true"></bean>
+       <!--bean之间的继承-->
+       <bean id="address02" class="code.autowire.Address" parent="address01"></bean>
+
+       <bean id="car" class="code.autowire.Car" p:brand="奔驰" p:price="600000">
+       </bean>
+      <!--bean之间的依赖（前置）-->
+       <bean id="person" class="code.autowire.Person" depends-on="car">
+              <property name="name" value="TOM" />
+              <property name="address" ref="address02" />
+       </bean>
+</beans>
